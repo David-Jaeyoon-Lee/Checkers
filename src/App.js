@@ -1,7 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
 
-
 // TODO: We will render the Board here. We can even have a panel later to restart game and indicate whose turn it is.
 function App() {
   return (
