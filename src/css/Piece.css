@@ -1,0 +1,9 @@
+.piece {
+    width: 55px;
+    height: 55px;
+    border-radius: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

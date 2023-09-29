@@ -1,12 +1,11 @@
 import React from 'react';
+import Piece from './Piece';
+import '../css/Square.css';
 
-const Square = () => {
-    // Squares are the attributes that we can select to move the pieces. They represent location.
+const Square = ({className, row, col, pieceColor}) => {
     return (
-        <div>
-            {
-                // TODO: In the Square it can have a piece if when board renders there is piece in that row, col. Handle piece drop and is basis for move selection.
-            }
+        <div className={`square ${className}`}>
+            {pieceColor && <Piece color={pieceColor} row = {row} col = {col}/>}
         </div>
     );
 }
