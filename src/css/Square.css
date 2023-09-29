@@ -1,0 +1,20 @@
+.square {
+    position: relative;
+    width: 65px;
+    height: 65px;
+    border: 1.5px solid #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    left: 13px;
+    top: 13px;
+}
+
+.active {
+    background-color: #8b4f06;
+}
+
+.inactive {
+    background-color: #d29141;
+}

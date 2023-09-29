@@ -1,12 +1,40 @@
 import React from 'react';
+import '../css/Piece.css';
+import redPieceImg from '../images/red-piece.png';
+import blackPieceImg from '../images/black-piece.png';
+import kingRedPieceImg from '../images/king-red-piece.png';
+import kingBlackPieceImg from '../images/king-black-piece.png';
 
-const Piece = () => {
+
+const Piece = ({color, row, col}) => {
+    var pieceColor = "";
+    var pieceImage = null;
+
+    switch (color) {
+        case 'black':
+            pieceColor = 'black';
+            pieceImage = blackPieceImg;
+            break;
+        case 'red':
+            pieceColor = 'red';
+            pieceImage = redPieceImg;
+            break;
+        case 'red-king':
+            pieceColor = 'red-king';
+            pieceImage = kingRedPieceImg;
+            break;
+        default:
+            pieceColor = 'black-king';
+            pieceImage = kingBlackPieceImg;
+            break;
+    }
+
     return (
-        <div>
-            {
-                // TODO: Render Pieces. Can be an Image and determine type via color attribute/param passed in
-            }
-        </div>
+        <img 
+            className="piece"
+            src={pieceImage}
+            alt={pieceColor + ' piece'}
+        />
     );
 }
 
