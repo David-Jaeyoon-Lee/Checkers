@@ -9,3 +9,31 @@
 .row {
     display: flex;
 }
+
+.game-won-screen {
+  height: 575px;
+  width: 570px;
+  margin-top: -22px;  
+  background-image: url("../images/victory-screen.png");
+  background-size: cover;
+  text-align: center;
+  line-height: 250px;
+}
+
+.red-text {
+  color: red;
+  text-shadow:
+    0.07em 0 black,
+    0 0.07em black,
+    -0.07em 0 black,
+    0 -0.07em black;
+}
+
+.black-text {
+  color: black;
+  text-shadow:
+    0.07em 0 grey,
+    0 0.07em grey,
+    -0.07em 0 grey,
+    0 -0.07em grey;
+}
