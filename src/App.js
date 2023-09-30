@@ -6,6 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function App() {
   const [currentPlayer, setCurrentPlayer] = useState(true);
+  const [ai, setAI] = useState(true);
 
   const toggleTurn = () => {
     setCurrentPlayer(prev => !prev);
@@ -15,7 +16,7 @@ function App() {
     <div className="App">
       <h1 className='title'>Checkers Game</h1>
       <DndProvider backend={HTML5Backend}>
-        <Board currentPlayer={currentPlayer} toggleTurn={toggleTurn}/>
+        <Board ai = {ai} currentPlayer = {currentPlayer} toggleTurn = {toggleTurn}/>
       </DndProvider>
     </div>
   );
