@@ -27,13 +27,20 @@ const Board = ({currentPlayer, toggleTurn}) => {
         const { row: toRow, col: toCol } = toSquare;
         const newBoardState = [...boardState];
         let rowDelta = 0;
+        let promote = "";
 
         switch (newBoardState[fromRow][fromCol]) {
             case 'black':
                 rowDelta = fromRow - toRow;
+                if(toRow === 0){
+                    promote = "-king";
+                }
                 break;
             case 'red':
                 rowDelta = toRow - fromRow;
+                if(toRow === 7){
+                    promote = "-king";
+                }
                 break;
             default:
                 rowDelta = Math.abs(fromRow - toRow);
@@ -46,7 +53,7 @@ const Board = ({currentPlayer, toggleTurn}) => {
 
         // Check if it is a valid piece move or capture. Modify board accordingly.
         if (rowDelta === 1 && Math.abs(fromCol - toCol) === 1) {
-            newBoardState[toRow][toCol] = newBoardState[fromRow][fromCol];
+            newBoardState[toRow][toCol] = newBoardState[fromRow][fromCol] + promote;
             newBoardState[fromRow][fromCol] = null;
             
             return newBoardState;
@@ -62,9 +69,9 @@ const Board = ({currentPlayer, toggleTurn}) => {
                     setNumRedPieces(numRedPieces - 1);
                 }
 
-                newBoardState[opponentRow][opponentCol] = null;
-                newBoardState[toRow][toCol] = newBoardState[fromRow][fromCol];
+                newBoardState[toRow][toCol] = newBoardState[fromRow][fromCol] + promote;
                 newBoardState[fromRow][fromCol] = null;
+                newBoardState[opponentRow][opponentCol] = null;
         
                 return newBoardState;
             }
