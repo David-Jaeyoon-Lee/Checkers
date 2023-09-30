@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Square from './Square';
 import '../css/Board.css';
 
-const Board = () => {
+const Board = ({currentPlayer, toggleTurn}) => {
     const [selectedSquare, setSelectedSquare] = useState(null);
 
     const [boardState, setBoardState] = useState([
@@ -39,8 +39,9 @@ const Board = () => {
         } else if (Math.abs(fromRow - toRow) === 2 && Math.abs(fromCol - toCol) === 2) {
             const opponentRow = (fromRow + toRow) / 2;
             const opponentCol = (fromCol + toCol) / 2;
+            const opponentColor = currentPlayer ? 'red' : 'black';
 
-            if (newBoardState[opponentRow][opponentCol] !== null) {
+            if (newBoardState[opponentRow][opponentCol] !== null && newBoardState[opponentRow][opponentCol].includes(opponentColor)) {
                 newBoardState[opponentRow][opponentCol] = null;
                 return newBoardState;
             }
@@ -54,13 +55,14 @@ const Board = () => {
         is already selected. */
     const handleSquareClick = (row, col) => {
         if (selectedSquare === null) {
-            if (boardState[row][col] !== null) {
+            if (boardState[row][col] !== null && boardState[row][col].includes((currentPlayer ? 'black' : 'red'))) {
                 setSelectedSquare({row, col});
             }
         } else {
             const newBoardState = handleMove(selectedSquare, {row, col}, boardState);
             if (newBoardState !== null) {
                 setBoardState(newBoardState);
+                toggleTurn();
             }
             setSelectedSquare(null);
         }
@@ -73,6 +75,7 @@ const Board = () => {
         const newBoardState = handleMove({row: fromRow, col: fromCol}, {row: toRow, col: toCol}, boardState);
         if (newBoardState !== null) {
             setBoardState(newBoardState);
+            toggleTurn();
         }
         setSelectedSquare(null);
     };
@@ -85,6 +88,7 @@ const Board = () => {
                         (((rowIndex + colIndex) % 2 === 0) ?
                             <Square
                                 className = "inactive"
+                                handleSquareClick = {()=>{}}
                             /> : 
                             <Square
                                 className = "active"
@@ -94,6 +98,7 @@ const Board = () => {
                                 pieceColor = {pieceColor}
                                 handleSquareClick = {handleSquareClick}
                                 handleSquareDrop = {handleSquareDrop}
+                                currentPlayer = {currentPlayer}
                             />
                         )
                     ))}

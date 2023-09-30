@@ -6,7 +6,8 @@ import kingRedPieceImg from '../images/king-red-piece.png';
 import kingBlackPieceImg from '../images/king-black-piece.png';
 import { useDrag } from 'react-dnd';
  
-const Piece = ({color, row, col}) => {
+const Piece = ({color, row, col, currentPlayer}) => {
+    const currentPlayerColor = currentPlayer ? 'black' : 'red';
     var pieceColor = "";
     var pieceImage = null;
 
@@ -37,17 +38,28 @@ const Piece = ({color, row, col}) => {
         }),
         options: {
             dragPreviewOffset: { x: 100, y: 100 },
-        }
+        },
+        canDrag: color.includes(currentPlayerColor),
     });
 
     return (
-        <img 
-            className="piece"
-            ref={drag}
-            style={{ opacity: isDragging ? 0.5 : 1 }}
-            src={pieceImage}
-            alt={pieceColor + ' piece'}
-        />
+        <div>
+            {((color.includes(currentPlayerColor)) ? 
+                <img 
+                    className="piece"
+                    src={pieceImage}
+                    alt={pieceColor + ' piece'}
+                    ref={drag}
+                    style={{ opacity: isDragging ? 0.5 : 1 }}
+                /> :
+                    <img 
+                    className="piece"
+                    src={pieceImage}
+                    alt={pieceColor + ' piece'}
+                    draggable = {false}
+                />
+            )}
+        </div>
     );
 }
 
