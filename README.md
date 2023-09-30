@@ -30,6 +30,7 @@ You can submit this by emailing me your solution in a ZIP file, GitHub link, or 
 ``` 
 git clone https://github.com/David-Jaeyoon-Lee/Tesla-Technical-Challenge.git
 cd Tesla-Technical-Challenge
+npm install
 npm start 
 ```
 
