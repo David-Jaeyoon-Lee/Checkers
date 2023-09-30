@@ -7,6 +7,8 @@ const Board = ({currentPlayer, toggleTurn}) => {
     const [winner, setWinner] = useState(null);
     const [numBlackPieces, setNumBlackPieces] = useState(12);
     const [numRedPieces, setNumRedPieces] = useState(12);
+    const [hoverSquare, setHoverSquare] = useState([]);
+    const [validMoves, setValidMoves] = useState([]);
 
     const [boardState, setBoardState] = useState([
         [null, 'red', null, 'red', null, 'red', null, 'red'],
@@ -63,7 +65,7 @@ const Board = ({currentPlayer, toggleTurn}) => {
             const opponentColor = currentPlayer ? 'red' : 'black';
 
             if (newBoardState[opponentRow][opponentCol] !== null && newBoardState[opponentRow][opponentCol].includes(opponentColor)) {
-                if(opponentColor == 'black'){
+                if(opponentColor === 'black'){
                     setNumBlackPieces(numBlackPieces - 1);
                 } else {
                     setNumRedPieces(numRedPieces - 1);
@@ -95,6 +97,8 @@ const Board = ({currentPlayer, toggleTurn}) => {
                 toggleTurn();
             }
             setSelectedSquare(null);
+            setValidMoves([]);
+            setHoverSquare([]);
         }
     };
 
@@ -108,7 +112,67 @@ const Board = ({currentPlayer, toggleTurn}) => {
             toggleTurn();
         }
         setSelectedSquare(null);
+        setValidMoves([]);
+        setHoverSquare([]);
     };
+
+    /* Executes when hovering over pieces: 
+        For a specific row and col, return the valid moves for that square */ 
+    const calculateValidMoves = (row, col) => {
+        let validMoves = [];
+        let rowDelta = [(currentPlayer ? -1 : 1)]
+        const opponentColor = (currentPlayer ? 'red' : 'black');
+
+        if(boardState[row][col] == null){
+            return validMoves;
+        }
+
+        if(boardState[row][col].includes('king')){
+            rowDelta.push((currentPlayer ? 1: -1));
+        }
+
+        for(const y of rowDelta){
+            for(const x of [-1, 1]){
+                if(!inBoardBound(row + y, col + x)){
+                    continue;
+                }
+                if(boardState[row + y][col + x] === null){
+                    validMoves.push({row: row + y, col: col + x});
+                } else if(boardState[row + y][col + x].includes(opponentColor)) {
+                    if(inBoardBound(row + y*2, col + x*2) && boardState[row + y*2][col + x*2] === null){
+                        validMoves.push({row: row + y*2, col: col + x*2});
+                    }
+                }
+            }
+        }
+
+        return validMoves;
+    };
+
+    /* Check if row and col are within boundaries */
+    const inBoardBound = (row, col) => {
+        return row >=0 && row < 8 && col >= 0 && col < 8;
+    }
+
+    /* Executes when mouse enters piece (hovers onto): 
+        Set valid moves to the valid moves that piece can make.
+        Set the square the piece is on as hover square */ 
+    const handleMouseEnter = (row, col) => {
+        if(selectedSquare === null){
+            const validMoves = calculateValidMoves(row, col);
+            setValidMoves(validMoves);
+            setHoverSquare([{row, col}]);
+        }
+    };
+
+    /* Executes when mouse leaves piece (hovers out): 
+        Reset valid moves and hover square */ 
+    const handleMouseLeave = () => {
+        if(selectedSquare === null){
+            setValidMoves([]);
+            setHoverSquare([]);
+        }
+    }
 
     /* Executes a piece is taken:
         Sets winner if the game is won. */
@@ -131,6 +195,8 @@ const Board = ({currentPlayer, toggleTurn}) => {
                                     row = {rowIndex}
                                     col = {colIndex}
                                     handleSquareClick = {() => {}}
+                                    validMove={false}
+                                    hoverSquare={false}
                                 /> : 
                                 <Square
                                     className = "active"
@@ -138,9 +204,13 @@ const Board = ({currentPlayer, toggleTurn}) => {
                                     row = {rowIndex}
                                     col = {colIndex}
                                     pieceColor = {pieceColor}
+                                    currentPlayer = {currentPlayer}
                                     handleSquareClick = {handleSquareClick}
                                     handleSquareDrop = {handleSquareDrop}
-                                    currentPlayer = {currentPlayer}
+                                    validMove={validMoves.some(move => move.row === rowIndex && move.col === colIndex)}
+                                    hoverSquare={hoverSquare.some(move => move.row === rowIndex && move.col === colIndex)}
+                                    handleMouseEnter={handleMouseEnter}
+                                    handleMouseLeave = {handleMouseLeave}
                                 />
                             )
                         ))}
