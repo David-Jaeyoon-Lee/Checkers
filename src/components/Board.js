@@ -10,7 +10,8 @@ const Board = ({ai, currentPlayer, toggleTurn}) => {
     const [hoverSquare, setHoverSquare] = useState([]);
     const [validMoves, setValidMoves] = useState([]);
     const [validCaptureMoves, setValidCaptureMoves] = useState({});
-    const [currentPlayerValidMoves, setCurrentPlayerValidMoves] = useState({});
+    const [currentPlayerValidMoves, setCurrentPlayerValidMoves] = useState({temp: 0});
+    const [noMoreMoves, setNoMoreMoves] = useState(false);
 
     const [boardState, setBoardState] = useState([
         [null, 'red', null, 'red', null, 'red', null, 'red'],
@@ -212,8 +213,10 @@ const Board = ({ai, currentPlayer, toggleTurn}) => {
     useEffect( () => {
         if (numRedPieces === 0 || numBlackPieces === 0){
             setWinner(numRedPieces === 0 ? 'Black' : 'Red');
+        } else if(noMoreMoves){
+            setWinner('Draw');
         }
-    }, [numBlackPieces, numRedPieces]);
+    }, [noMoreMoves, numBlackPieces, numRedPieces]);
 
     /* Calls addCurrentPlayerValidMoves everytime current player changes */
     useEffect( () => {
@@ -223,7 +226,9 @@ const Board = ({ai, currentPlayer, toggleTurn}) => {
     /* Executes everytime we calculate a player's valid moves (aka whenever we switch players):
         If our AI flag is on then we will make a basic random move as red. */
     useEffect( () => {
-        if(currentPlayer === false && ai === true){
+        if(Object.keys(currentPlayerValidMoves).length === 0){
+            setNoMoreMoves(true);
+        }else if(currentPlayer === false && ai === true){
             let index = Math.floor(Math.random() * Object.keys(currentPlayerValidMoves).length);
             let key = Object.keys(currentPlayerValidMoves).at(index);
             let moves = currentPlayerValidMoves[key];
