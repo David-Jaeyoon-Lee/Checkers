@@ -1,6 +1,7 @@
 .board{
     border: 10px ridge burlywood;
     margin-top: -15px;
+    margin-left: -500px;
     height: 575px;
     width: 570px;
     background-color: rgb(168, 100, 23);
