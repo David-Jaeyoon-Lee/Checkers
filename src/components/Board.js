@@ -9,6 +9,8 @@ const Board = ({currentPlayer, toggleTurn}) => {
     const [numRedPieces, setNumRedPieces] = useState(12);
     const [hoverSquare, setHoverSquare] = useState([]);
     const [validMoves, setValidMoves] = useState([]);
+    const [validCaptureMoves, setValidCaptureMoves] = useState({});
+    const [currentPlayerValidMoves, setCurrentPlayerValidMoves] = useState({});
 
     const [boardState, setBoardState] = useState([
         [null, 'red', null, 'red', null, 'red', null, 'red'],
@@ -28,6 +30,7 @@ const Board = ({currentPlayer, toggleTurn}) => {
         const { row: fromRow, col: fromCol } = fromSquare;
         const { row: toRow, col: toCol } = toSquare;
         const newBoardState = [...boardState];
+
         let rowDelta = 0;
         let promote = "";
 
@@ -54,10 +57,10 @@ const Board = ({currentPlayer, toggleTurn}) => {
         }
 
         // Check if it is a valid piece move or capture. Modify board accordingly.
-        if (rowDelta === 1 && Math.abs(fromCol - toCol) === 1) {
+        if (Object.keys(validCaptureMoves).length === 0 && rowDelta === 1 && Math.abs(fromCol - toCol) === 1) {
             newBoardState[toRow][toCol] = newBoardState[fromRow][fromCol] + promote;
             newBoardState[fromRow][fromCol] = null;
-            
+
             return newBoardState;
         } else if (rowDelta === 2 && Math.abs(fromCol - toCol) === 2) {
             const opponentRow = (fromRow + toRow) / 2;
@@ -74,7 +77,7 @@ const Board = ({currentPlayer, toggleTurn}) => {
                 newBoardState[toRow][toCol] = newBoardState[fromRow][fromCol] + promote;
                 newBoardState[fromRow][fromCol] = null;
                 newBoardState[opponentRow][opponentCol] = null;
-        
+
                 return newBoardState;
             }
         }
@@ -119,13 +122,9 @@ const Board = ({currentPlayer, toggleTurn}) => {
     /* Executes when hovering over pieces: 
         For a specific row and col, return the valid moves for that square */ 
     const calculateValidMoves = (row, col) => {
-        let validMoves = [];
+        let validMoves = [], validCaptures = [];
         let rowDelta = [(currentPlayer ? -1 : 1)]
         const opponentColor = (currentPlayer ? 'red' : 'black');
-
-        if(boardState[row][col] == null){
-            return validMoves;
-        }
 
         if(boardState[row][col].includes('king')){
             rowDelta.push((currentPlayer ? 1: -1));
@@ -140,13 +139,13 @@ const Board = ({currentPlayer, toggleTurn}) => {
                     validMoves.push({row: row + y, col: col + x});
                 } else if(boardState[row + y][col + x].includes(opponentColor)) {
                     if(inBoardBound(row + y*2, col + x*2) && boardState[row + y*2][col + x*2] === null){
-                        validMoves.push({row: row + y*2, col: col + x*2});
+                        validCaptures.push({row: row + y*2, col: col + x*2});
                     }
                 }
             }
         }
 
-        return validMoves;
+        return {validMoves, validCaptures};
     };
 
     /* Check if row and col are within boundaries */
@@ -159,8 +158,12 @@ const Board = ({currentPlayer, toggleTurn}) => {
         Set the square the piece is on as hover square */ 
     const handleMouseEnter = (row, col) => {
         if(selectedSquare === null){
-            const validMoves = calculateValidMoves(row, col);
-            setValidMoves(validMoves);
+            const {validMoves, validCaptures} = calculateValidMoves(row, col);
+            if(Object.keys(validCaptureMoves).length > 0){
+                setValidMoves(validCaptures);
+            } else {
+                setValidMoves(validMoves);
+            }
             setHoverSquare([{row, col}]);
         }
     };
@@ -174,6 +177,36 @@ const Board = ({currentPlayer, toggleTurn}) => {
         }
     }
 
+    /* Executes whenever current player changes: 
+        Calculates the possible moves for the current player*/ 
+    const addCurrentPlayerValidMoves = (player) => {
+        const currentPlayerColor = player ? 'black' : 'red';
+        let newCurrentPlayerValidMoves = {};
+        let newCurrentPlayerValidCaptureMoves = {};
+
+        for(let r = 0; r <boardState.length; r++){
+            for(let c = 0; c <boardState[0].length; c++){
+                if(boardState[r][c] !== null && boardState[r][c].includes(currentPlayerColor)){
+                    const {validMoves, validCaptures} = calculateValidMoves(r, c);
+                    if(validMoves.length > 0){
+                        newCurrentPlayerValidMoves[r*10 + c] = validMoves;
+                    }
+
+                    if(validCaptures.length > 0){
+                        newCurrentPlayerValidCaptureMoves[r*10 + c] = validCaptures;
+                    }
+                }
+            }
+        }
+
+        if(Object.keys(newCurrentPlayerValidCaptureMoves).length > 0){
+            newCurrentPlayerValidMoves = newCurrentPlayerValidCaptureMoves
+        }
+
+        setValidCaptureMoves(newCurrentPlayerValidCaptureMoves);
+        setCurrentPlayerValidMoves(newCurrentPlayerValidMoves);
+    };
+
     /* Executes a piece is taken:
         Sets winner if the game is won. */
     useEffect( () => {
@@ -181,6 +214,11 @@ const Board = ({currentPlayer, toggleTurn}) => {
             setWinner(numRedPieces === 0 ? 'Black' : 'Red');
         }
     }, [numBlackPieces, numRedPieces]);
+
+    /* Calls addCurrentPlayerValidMoves everytime current player changes */
+    useEffect( () => {
+        addCurrentPlayerValidMoves(currentPlayer);
+    }, [currentPlayer]);
 
     return (
         <div className="board">
