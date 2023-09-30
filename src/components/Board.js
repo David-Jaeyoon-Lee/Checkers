@@ -23,26 +23,40 @@ const Board = ({currentPlayer, toggleTurn}) => {
         const { row: fromRow, col: fromCol } = fromSquare;
         const { row: toRow, col: toCol } = toSquare;
         const newBoardState = [...boardState];
-                
+        let rowDelta = 0;
+
+        switch (newBoardState[fromRow][fromCol]) {
+            case 'black':
+                rowDelta = fromRow - toRow;
+                break;
+            case 'red':
+                rowDelta = toRow - fromRow;
+                break;
+            default:
+                rowDelta = Math.abs(fromRow - toRow);
+        }
+
         // If there is a piece on toSquare, its not a valid move.
         if (newBoardState[toRow][toCol] !== null) {
             return null;
         }
 
-        // Move the piece from fromSqure to toSquare.
-        newBoardState[toRow][toCol] = newBoardState[fromRow][fromCol];
-        newBoardState[fromRow][fromCol] = null;
-
         // Check if it is a valid piece move or capture. Modify board accordingly.
-        if (Math.abs(fromRow - toRow) === 1 && Math.abs(fromCol - toCol) === 1) {
+        if (rowDelta === 1 && Math.abs(fromCol - toCol) === 1) {
+            newBoardState[toRow][toCol] = newBoardState[fromRow][fromCol];
+            newBoardState[fromRow][fromCol] = null;
+            
             return newBoardState;
-        } else if (Math.abs(fromRow - toRow) === 2 && Math.abs(fromCol - toCol) === 2) {
+        } else if (rowDelta === 2 && Math.abs(fromCol - toCol) === 2) {
             const opponentRow = (fromRow + toRow) / 2;
             const opponentCol = (fromCol + toCol) / 2;
             const opponentColor = currentPlayer ? 'red' : 'black';
 
             if (newBoardState[opponentRow][opponentCol] !== null && newBoardState[opponentRow][opponentCol].includes(opponentColor)) {
                 newBoardState[opponentRow][opponentCol] = null;
+                newBoardState[toRow][toCol] = newBoardState[fromRow][fromCol];
+                newBoardState[fromRow][fromCol] = null;
+        
                 return newBoardState;
             }
         }
@@ -88,6 +102,9 @@ const Board = ({currentPlayer, toggleTurn}) => {
                         (((rowIndex + colIndex) % 2 === 0) ?
                             <Square
                                 className = "inactive"
+                                key={colIndex}
+                                row={rowIndex}
+                                col={colIndex}
                                 handleSquareClick = {()=>{}}
                             /> : 
                             <Square
