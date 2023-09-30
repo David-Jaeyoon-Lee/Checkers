@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Square from './Square';
 import '../css/Board.css';
 
 const Board = ({currentPlayer, toggleTurn}) => {
     const [selectedSquare, setSelectedSquare] = useState(null);
+    const [winner, setWinner] = useState(null);
+    const [numBlackPieces, setNumBlackPieces] = useState(12);
+    const [numRedPieces, setNumRedPieces] = useState(12);
 
     const [boardState, setBoardState] = useState([
         [null, 'red', null, 'red', null, 'red', null, 'red'],
@@ -53,6 +56,12 @@ const Board = ({currentPlayer, toggleTurn}) => {
             const opponentColor = currentPlayer ? 'red' : 'black';
 
             if (newBoardState[opponentRow][opponentCol] !== null && newBoardState[opponentRow][opponentCol].includes(opponentColor)) {
+                if(opponentColor == 'black'){
+                    setNumBlackPieces(numBlackPieces - 1);
+                } else {
+                    setNumRedPieces(numRedPieces - 1);
+                }
+
                 newBoardState[opponentRow][opponentCol] = null;
                 newBoardState[toRow][toCol] = newBoardState[fromRow][fromCol];
                 newBoardState[fromRow][fromCol] = null;
@@ -94,33 +103,48 @@ const Board = ({currentPlayer, toggleTurn}) => {
         setSelectedSquare(null);
     };
 
+    /* Executes a piece is taken:
+        Sets winner if the game is won. */
+    useEffect( () => {
+        if (numRedPieces === 0 || numBlackPieces === 0){
+            setWinner(numRedPieces === 0 ? 'Black' : 'Red');
+        }
+    }, [numBlackPieces, numRedPieces]);
+
     return (
         <div className="board">
-            {boardState.map((row, rowIndex) => (
-                <div className="row" key={rowIndex}>
-                    {row.map((pieceColor, colIndex) => (
-                        (((rowIndex + colIndex) % 2 === 0) ?
-                            <Square
-                                className = "inactive"
-                                key={colIndex}
-                                row={rowIndex}
-                                col={colIndex}
-                                handleSquareClick = {()=>{}}
-                            /> : 
-                            <Square
-                                className = "active"
-                                key = {colIndex}
-                                row = {rowIndex}
-                                col = {colIndex}
-                                pieceColor = {pieceColor}
-                                handleSquareClick = {handleSquareClick}
-                                handleSquareDrop = {handleSquareDrop}
-                                currentPlayer = {currentPlayer}
-                            />
-                        )
-                    ))}
+            {((winner === null) ? 
+                boardState.map((row, rowIndex) => (
+                    <div className="row" key={rowIndex}>
+                        {row.map((pieceColor, colIndex) => (
+                            (((rowIndex + colIndex) % 2 === 0) ?
+                                <Square
+                                    className = "inactive"
+                                    key = {colIndex}
+                                    row = {rowIndex}
+                                    col = {colIndex}
+                                    handleSquareClick = {() => {}}
+                                /> : 
+                                <Square
+                                    className = "active"
+                                    key = {colIndex}
+                                    row = {rowIndex}
+                                    col = {colIndex}
+                                    pieceColor = {pieceColor}
+                                    handleSquareClick = {handleSquareClick}
+                                    handleSquareDrop = {handleSquareDrop}
+                                    currentPlayer = {currentPlayer}
+                                />
+                            )
+                        ))}
+                    </div>
+                )) :
+                <div className = "game-won-screen">
+                    <h1 className = {winner === 'red' ? 'red-text' : 'black-text'}>
+                        {['Red', 'Black'].includes(winner) ? winner +'  Player Won!' : "Stalemate! It's a tie!" }
+                    </h1>
                 </div>
-            ))}
+            )}
         </div>
     );
 }
