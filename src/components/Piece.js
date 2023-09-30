@@ -5,7 +5,6 @@ import blackPieceImg from '../images/black-piece.png';
 import kingRedPieceImg from '../images/king-red-piece.png';
 import kingBlackPieceImg from '../images/king-black-piece.png';
 
-
 const Piece = ({color, row, col}) => {
     var pieceColor = "";
     var pieceImage = null;
