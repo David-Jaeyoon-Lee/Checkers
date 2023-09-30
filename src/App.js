@@ -6,7 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function App() {
   const [currentPlayer, setCurrentPlayer] = useState(true);
-  const [ai, setAI] = useState(true);
+  const [ai, setAI] = useState(false);
 
   const toggleTurn = () => {
     setCurrentPlayer(prev => !prev);
