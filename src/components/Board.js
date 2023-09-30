@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Square from './Square';
 import '../css/Board.css';
 
@@ -16,7 +16,9 @@ const Board = () => {
         ['black', null, 'black', null, 'black', null, 'black', null]
     ]);
 
-    /* Handles the move and returns the resulting board state (on success) or null (on fail). */
+    /* Called from handleSquareClick & handleSquareDrop:
+        Handles the move and returns the resulting board state 
+        (on success) or null (on fail). */
     const handleMove = (fromSquare, toSquare, boardState) => {
         const { row: fromRow, col: fromCol } = fromSquare;
         const { row: toRow, col: toCol } = toSquare;
@@ -47,7 +49,9 @@ const Board = () => {
         return null;
       };
 
-    /* Executes when Square is clicked: Selects a square or tries to executes a move if a square is already selected. */
+    /* Executes when Square is clicked: 
+        Selects a square or tries to executes a move if a square 
+        is already selected. */
     const handleSquareClick = (row, col) => {
         if (selectedSquare === null) {
             if (boardState[row][col] !== null) {
@@ -62,6 +66,17 @@ const Board = () => {
         }
     };
 
+    /* Executes when piece is dropped onto a square: 
+        Behaves simiarly to handleSquareClick, but no square 
+        selections and just uses piece's origin square as selected square. */ 
+    const handleSquareDrop = (fromRow, fromCol, toRow, toCol) => {
+        const newBoardState = handleMove({row: fromRow, col: fromCol}, {row: toRow, col: toCol}, boardState);
+        if (newBoardState !== null) {
+            setBoardState(newBoardState);
+        }
+        setSelectedSquare(null);
+    };
+
     return (
         <div className="board">
             {boardState.map((row, rowIndex) => (
@@ -73,11 +88,12 @@ const Board = () => {
                             /> : 
                             <Square
                                 className = "active"
-                                key={colIndex}
-                                row={rowIndex}
-                                col={colIndex}
-                                pieceColor={pieceColor}
-                                handleSquareClick={handleSquareClick}
+                                key = {colIndex}
+                                row = {rowIndex}
+                                col = {colIndex}
+                                pieceColor = {pieceColor}
+                                handleSquareClick = {handleSquareClick}
+                                handleSquareDrop = {handleSquareDrop}
                             />
                         )
                     ))}
