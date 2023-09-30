@@ -3,7 +3,7 @@ import Piece from './Piece';
 import '../css/Square.css';
 import { useDrop } from 'react-dnd';
 
-const Square = ({className, row, col, pieceColor, handleSquareClick, handleSquareDrop}) => { 
+const Square = ({className, row, col, pieceColor, handleSquareClick, handleSquareDrop, currentPlayer}) => { 
     const [{ isOver }, drop] = useDrop({
         accept: 'PIECE',
         drop: (item) => {
@@ -21,7 +21,7 @@ const Square = ({className, row, col, pieceColor, handleSquareClick, handleSquar
             ref = {(node) => drop(node)}
             onClick = {() => handleSquareClick(row, col)}
         >
-            {pieceColor && <Piece color = {pieceColor} row = {row} col = {col}/>}
+            {pieceColor && <Piece color = {pieceColor} row = {row} col = {col} currentPlayer = {currentPlayer}/>}
         </div>
     );
 }
