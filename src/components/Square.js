@@ -3,7 +3,7 @@ import Piece from './Piece';
 import '../css/Square.css';
 import { useDrop } from 'react-dnd';
 
-const Square = ({className, row, col, pieceColor, handleSquareClick, handleSquareDrop, currentPlayer}) => { 
+const Square = ({className, row, col, pieceColor, handleSquareClick, handleSquareDrop, currentPlayer, hoverSquare, validMove, handleMouseEnter, handleMouseLeave}) => { 
     const [{ isOver }, drop] = useDrop({
         accept: 'PIECE',
         drop: (item) => {
@@ -17,11 +17,11 @@ const Square = ({className, row, col, pieceColor, handleSquareClick, handleSquar
 
     return (
         <div 
-            className = {`square ${className}`}
+            className={`square ${className} ${hoverSquare ? 'hover-square' : ''} ${validMove ? 'valid-move' : ''}`}
             ref = {(node) => drop(node)}
             onClick = {() => handleSquareClick(row, col)}
         >
-            {pieceColor && <Piece color = {pieceColor} row = {row} col = {col} currentPlayer = {currentPlayer}/>}
+            {pieceColor && <Piece color = {pieceColor} row = {row} col = {col} currentPlayer = {currentPlayer} handleMouseEnter = {(r, c)=>handleMouseEnter(r,c)}  handleMouseLeave = {()=>handleMouseLeave()}/>}
         </div>
     );
 }

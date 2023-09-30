@@ -6,7 +6,7 @@ import kingRedPieceImg from '../images/king-red-piece.png';
 import kingBlackPieceImg from '../images/king-black-piece.png';
 import { useDrag } from 'react-dnd';
  
-const Piece = ({color, row, col, currentPlayer}) => {
+const Piece = ({color, row, col, currentPlayer, handleMouseEnter, handleMouseLeave}) => {
     const currentPlayerColor = currentPlayer ? 'black' : 'red';
     var pieceColor = "";
     var pieceImage = null;
@@ -51,8 +51,10 @@ const Piece = ({color, row, col, currentPlayer}) => {
                     alt={pieceColor + ' piece'}
                     ref={drag}
                     style={{ opacity: isDragging ? 0.5 : 1 }}
+                    onMouseEnter={()=>handleMouseEnter(row, col)}
+                    onMouseLeave={()=>handleMouseLeave()}
                 /> :
-                    <img 
+                <img 
                     className="piece"
                     src={pieceImage}
                     alt={pieceColor + ' piece'}

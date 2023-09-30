@@ -18,3 +18,11 @@
 .inactive {
     background-color: #d29141;
 }
+
+.valid-move { 
+    background-color: yellow;
+}
+  
+.hover-square {
+    background-color: lightblue;
+}
