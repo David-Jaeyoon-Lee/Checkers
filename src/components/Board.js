@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Square from './Square';
 import '../css/Board.css';
 
-const Board = ({currentPlayer, toggleTurn}) => {
+const Board = ({ai, currentPlayer, toggleTurn}) => {
     const [selectedSquare, setSelectedSquare] = useState(null);
     const [winner, setWinner] = useState(null);
     const [numBlackPieces, setNumBlackPieces] = useState(12);
@@ -119,7 +119,7 @@ const Board = ({currentPlayer, toggleTurn}) => {
         setHoverSquare([]);
     };
 
-    /* Executes when hovering over pieces: 
+    /* Executes when hovering over pieces or when getting a player's valid move set: 
         For a specific row and col, return the valid moves for that square */ 
     const calculateValidMoves = (row, col) => {
         let validMoves = [], validCaptures = [];
@@ -178,7 +178,7 @@ const Board = ({currentPlayer, toggleTurn}) => {
     }
 
     /* Executes whenever current player changes: 
-        Calculates the possible moves for the current player*/ 
+        Calculates the possible moves for the current player. */ 
     const addCurrentPlayerValidMoves = (player) => {
         const currentPlayerColor = player ? 'black' : 'red';
         let newCurrentPlayerValidMoves = {};
@@ -219,6 +219,19 @@ const Board = ({currentPlayer, toggleTurn}) => {
     useEffect( () => {
         addCurrentPlayerValidMoves(currentPlayer);
     }, [currentPlayer]);
+
+    /* Executes everytime we calculate a player's valid moves (aka whenever we switch players):
+        If our AI flag is on then we will make a basic random move as red. */
+    useEffect( () => {
+        if(currentPlayer === false && ai === true){
+            let index = Math.floor(Math.random() * Object.keys(currentPlayerValidMoves).length);
+            let key = Object.keys(currentPlayerValidMoves).at(index);
+            let moves = currentPlayerValidMoves[key];
+            index = Math.floor(Math.random() * moves.length);
+            let toMove = moves[index];
+            handleSquareDrop(Math.floor(key/10), key%10, toMove.row, toMove.col);
+        }
+    }, [currentPlayerValidMoves]);
 
     return (
         <div className="board">
