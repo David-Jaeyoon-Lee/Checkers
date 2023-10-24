@@ -1,5 +1,5 @@
-# Tesla Take-Home Checkers Technical Challenge
-This project was completed by David Jaeyoon Lee as a part of his interview process for Tesla.
+# Take-Home Checkers Technical Challenge
+This project was completed by David Jaeyoon Lee as a part of his interview process for [Redacted].
 
 ## Requirements
 <u>Checkers take-home challenge:</u> \
@@ -24,12 +24,12 @@ Ways to stand out of the crowd:
 * King checkers mechanics (when a checker hits the last row and gets an ability to move backwards)
 * Basic AI player (making moves that are not completely random)
 
-You can submit this by emailing me your solution in a ZIP file, GitHub link, or One Drive link. Most employees at Tesla are not able to access Google docs so please be mindful of this when submitting.
+You can submit this by emailing me your solution in a ZIP file, GitHub link, or One Drive link. Most employees at [Redacted] are not able to access Google docs so please be mindful of this when submitting.
 
 ## How to play the game
 ``` 
-git clone https://github.com/David-Jaeyoon-Lee/Tesla-Technical-Challenge.git
-cd Tesla-Technical-Challenge
+git clone https://github.com/David-Jaeyoon-Lee/Checkers.git
+cd Checkers
 npm install
 npm start 
 ```
