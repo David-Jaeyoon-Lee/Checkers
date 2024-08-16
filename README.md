@@ -76,4 +76,4 @@ Piece represents piece that can move along the Squares of a Board. It is ultimat
 Panel is just an interface so that you can change the gamemode and restart the game! 
 
 ## Other
-If you have any questions or have trouble understanding/starting up this project. Contact djlee1004@berkeley.edu
+If you have any questions or have trouble understanding/starting up this project. Contact davidjlee0108@gmail.com
